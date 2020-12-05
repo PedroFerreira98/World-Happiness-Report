@@ -59,7 +59,7 @@ countries_to_drop = ['Azerbaijan', 'Albania', 'Armenia', 'Belarus', 'Bosnia and 
 europe_country = europe_country[~europe_country['Country'].isin(countries_to_drop)]
 europe_country.reset_index(inplace=True)
 europe_country.drop(columns=['index','country_id'],inplace=True)
-europe_country['country_id']=europe_country.index
+europe_country['index']=europe_country.index
 
 
 
