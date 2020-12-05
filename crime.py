@@ -118,4 +118,21 @@ crimedf['Country'] = crimedf['Country'].map({'AT': 'Austria', \
                                              'XK':'Kosovo'})
 
     
-crimedf
+crimedf = crimedf.drop(crimedf.iloc[:, 6:18], axis = 1) 
+
+crimedf= crimedf.melt(id_vars="Country",var_name="Year", value_name="Value")
+
+rows_to_drop = ['Kosovo', 'North Macedonia', 'Turkey']
+europe_country = crimedf [~crimedf['Country'].isin(rows_to_drop)]
+
+europe_country["Country"]=europe_country["Country"].replace({"Czechia": "Czech Republic"})
+
+europe_country.sort_values(by=['Country'])
+
+europe_country['Country'].nunique()
+
+crime_rate = europe_country.reset_index(drop=True)
+
+crime_rate= crime_rate.rename(columns={"Value": "Crime_Value"})
+
+crime_rate
