@@ -46,6 +46,17 @@ countries_to_drop = ['Albania', 'Andorra', 'Armenia', 'Azerbaijan', 'Belarus', '
 alcohol = alcohol[~alcohol['Country'].isin(countries_to_drop)]
 
 
+
+
+alcohol['year'] = alcohol['year'].astype(int)
+
+
+alcohol.rename(columns={'Value':'Alcohol_value'},inplace=True)
+
+
+#print(alcohol.dtypes)
+
+
 #Pedro drop or change (alcohol table): 
 #    
 #    Albania, Andorra, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, 
