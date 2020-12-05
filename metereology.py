@@ -95,9 +95,20 @@ year_cleaned[15] = year_cleaned[15]/1000                #We divide the element i
 #Create a new dataframe with a slice of the original dataframe and add the new cleaned 'Year' column
 hours_of_sun_year = hours_of_sun[['Country', 'City']]
 hours_of_sun_year['Year'] = year_cleaned
-hours_of_sun_year
+hours_of_sun_year.columns = ['Country', 'City', 'Value']
 
 #Groupby country
-hours_of_sun_year_by_country = hours_of_sun_year.groupby('Country').agg('mean')
+hours_of_sun_year_by_country = hours_of_sun_year.groupby('Country', as_index = False).agg('mean')
+
+#Drop columns that we don't need
+cols_to_drop = ['Armenia', 'Albania', 'Belarus', 'Bosnia and Herzegovina', 'Georgia', 'Faroe Islands', 'Moldova', 'Monaco', 'North Macedonia', 'Russia', 'Turkey', 'Ukraine']
+hours_of_sun_year_by_country = hours_of_sun_year_by_country[~hours_of_sun_year_by_country['Country'].isin(cols_to_drop)]
+
+#Create ordered index
+hours_of_sun_year_by_country.reset_index(inplace=True)
+hours_of_sun_year_by_country.drop(columns='index', inplace = True)
+hours_of_sun_year_by_country['index']=hours_of_sun_year_by_country.index
+
+#Print final table
 print(hours_of_sun_year_by_country)
 
