@@ -44,6 +44,7 @@ country_table.rename(columns={'Region_x':'Region'},inplace=True)
 #country_table['country_id'] = country_table.index
 
 
+
 europe_country = country_table.query('Region == "Central and Eastern Europe"')
 europe_country = europe_country.append(country_table.query('Region == "Western Europe" ' ))
 europe_country.sort_values(by='Country',inplace=True)
@@ -52,7 +53,13 @@ europe_country.drop(columns='index',inplace=True)
 europe_country['country_id']=europe_country.index
 
 
-
+countries_to_drop = ['Azerbaijan', 'Albania', 'Armenia', 'Belarus', 'Bosnia and Herzegovina', 'Georgia, Kazakhstan', 'Kosovo', 'Kyrgyzstan', 'Macedonia', \
+               'Georgia', 'Moldova', 'North Cyprus', 'Tajikistan','Russia','Ukraine', 'Turkemenistan','Turkmenistan','Kazakhstan', 'Uzbekistan']
+    
+europe_country = europe_country[~europe_country['Country'].isin(countries_to_drop)]
+europe_country.reset_index(inplace=True)
+europe_country.drop(columns=['index','country_id'],inplace=True)
+europe_country['country_id']=europe_country.index
 
 
 
@@ -96,9 +103,11 @@ happiness_report2019.drop(happiness_report2019.columns[cols_2019],axis=1,inplace
 
 # This 3 years only had Country collumn, didn't have Region collumn, by doing this I added the region collumn to this tables by merging 
 # with the country table, which has for every country their respective region
-happiness_report2017 = happiness_report2017.merge(country_table, left_on='Country', right_on='Country',how='left')
-happiness_report2018 = happiness_report2018.merge(country_table, left_on='Country', right_on='Country',how='left')
-happiness_report2019 = happiness_report2019.merge(country_table, left_on='Country', right_on='Country',how='left')
+happiness_report2015 = happiness_report2015.merge(europe_country, left_on='Country', right_on='Country',how='right')
+happiness_report2016 = happiness_report2016.merge(europe_country, left_on='Country', right_on='Country',how='right')
+happiness_report2017 = happiness_report2017.merge(europe_country, left_on='Country', right_on='Country',how='right')
+happiness_report2018 = happiness_report2018.merge(europe_country, left_on='Country', right_on='Country',how='right')
+happiness_report2019 = happiness_report2019.merge(europe_country, left_on='Country', right_on='Country',how='right')
 
 
 
@@ -132,6 +141,14 @@ happiness_report2019.rename(columns={'Score':'Happiness Score','Social support':
 
 
 
+happiness_report2015.rename(columns={'Region_x':'Region'},inplace=True)
+happiness_report2015.drop(columns='Region_y',inplace=True)
+
+
+happiness_report2016.rename(columns={'Region_x':'Region'},inplace=True)
+happiness_report2016.drop(columns='Region_y',inplace=True)
+
+
 # Bring data from 5 years to only one dataframe
 
 main_data_report = happiness_report2015.append(happiness_report2016)
@@ -148,7 +165,10 @@ main_data_report = main_data_report.append(happiness_report2019)
 
 
 
-sns.distplot(happiness_report2016['GDP per capita'],bins=30,axlabel='GDP per capita 2016')
+
+
+
+sns.distplot(happiness_report2016['GDP per capita'],bins=40,axlabel='GDP per capita 2016')
 
 
 #avg_gdp=pd.DataFrame(main_data_report.groupby(by=['year'])['GDP per capita','Happiness Score','Freedom to make life choices'].mean())
