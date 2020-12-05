@@ -5,6 +5,9 @@ Created on Thu Dec  3 21:09:57 2020
 @author: pedro
 """
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 
 #Load every report and create a collum for each dataframe a collumn year
@@ -38,6 +41,17 @@ country_table = country_table2015.merge(country_table2016, on='Country', how='ou
 country_table['Region_x'].fillna(country_table['Region_y'],inplace=True)
 country_table.drop(columns=['Region_y'],inplace=True)
 country_table.rename(columns={'Region_x':'Region'},inplace=True)
+#country_table['country_id'] = country_table.index
+
+
+europe_country = country_table.query('Region == "Central and Eastern Europe"')
+europe_country = europe_country.append(country_table.query('Region == "Western Europe" ' ))
+europe_country.sort_values(by='Country',inplace=True)
+europe_country.reset_index(inplace=True)
+europe_country.drop(columns='index',inplace=True)
+europe_country['country_id']=europe_country.index
+
+
 
 
 
@@ -124,3 +138,23 @@ main_data_report = happiness_report2015.append(happiness_report2016)
 main_data_report = main_data_report.append(happiness_report2017)
 main_data_report = main_data_report.append(happiness_report2018)
 main_data_report = main_data_report.append(happiness_report2019)
+
+## main_data_report columns
+
+#['Country', 'Region',            'Happiness Score',            'GDP per capita',
+#  'Family_Social_Support',          'Healthy life expectancy',
+#   'Freedom to make life choices',      'Perceptions of corruption',
+#       'Generosity',                         'year',                        'ranking']
+
+
+
+sns.distplot(happiness_report2016['GDP per capita'],bins=30,axlabel='GDP per capita 2016')
+
+
+#avg_gdp=pd.DataFrame(main_data_report.groupby(by=['year'])['GDP per capita','Happiness Score','Freedom to make life choices'].mean())
+
+
+#plt.plot(avg_gdp.index, avg_gdp['GDP per capita'],avg_gdp['Freedom to make life choices'])
+#plt.xlim(2014,2020) 
+
+
