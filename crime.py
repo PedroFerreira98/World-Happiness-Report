@@ -134,5 +134,10 @@ europe_country['Country'].nunique()
 crime_rate = europe_country.reset_index(drop=True)
 
 crime_rate= crime_rate.rename(columns={"Value": "Crime_Value"})
+crime_rate= crime_rate.rename(columns={"Year": "Crime_year"})
 
 crime_rate
+
+
+def get_crime_table():
+    return crime_rate

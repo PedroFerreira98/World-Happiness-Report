@@ -48,11 +48,14 @@ alcohol = alcohol[~alcohol['Country'].isin(countries_to_drop)]
 
 
 
-alcohol['year'] = alcohol['year'].astype(int)
 
 
 alcohol.rename(columns={'Value':'Alcohol_value'},inplace=True)
+alcohol.rename(columns={'year':'Alcohol_year'},inplace=True)
 
+
+alcohol.reset_index(inplace=True)
+alcohol.drop(columns='index',inplace=True)
 
 #print(alcohol.dtypes)
 
@@ -70,3 +73,8 @@ alcohol.rename(columns={'Value':'Alcohol_value'},inplace=True)
  #      United Kingdom of Great Britain and Northern Ireland (change to United Kingdom),
        
  #      Uzbekistan
+
+def get_alcohol_table():
+    return alcohol
+
+

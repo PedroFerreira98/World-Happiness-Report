@@ -7,6 +7,10 @@ Created on Thu Dec  3 21:09:57 2020
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import alcohol as alcohol
+import crime as crime
+import metereology as meteorology
+import suicide_rate as suicide
 
 
 
@@ -167,14 +171,25 @@ main_data_report = main_data_report.append(happiness_report2019)
 
 
 
+ # Bring final dataframe from each metric we decided to use for analysis
 
-sns.distplot(happiness_report2016['GDP per capita'],bins=40,axlabel='GDP per capita 2016')
+alcohol_table = alcohol.get_alcohol_table()
+crime_table = crime.get_crime_table()
+meteorology_table = meteorology.get_meteorology_table()
+suicide_table = suicide.get_suicide_rate()
 
 
-#avg_gdp=pd.DataFrame(main_data_report.groupby(by=['year'])['GDP per capita','Happiness Score','Freedom to make life choices'].mean())
+main_data_report = main_data_report.merge(alcohol_table, on='Country', how='inner')
 
+main_data_report.rename(columns={'Region_x':'Region'},inplace=True)
+main_data_report.drop(columns='Region_y',inplace=True)
 
-#plt.plot(avg_gdp.index, avg_gdp['GDP per capita'],avg_gdp['Freedom to make life choices'])
-#plt.xlim(2014,2020) 
+main_data_report = main_data_report.merge(crime_table, on='Country', how='inner')
+
+main_data_report = main_data_report.merge(meteorology_table, on='Country', how='inner')
+main_data_report.rename(columns={'index_x':'index'},inplace=True)
+main_data_report.drop(columns='index_y',inplace=True)
+
+main_data_report = main_data_report.merge(suicide_table, on='Country', how='inner')
 
 
