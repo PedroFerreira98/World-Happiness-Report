@@ -9,7 +9,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import alcohol as alcohol
 import crime as crime
-import metereology as meteorology
+#import metereology as meteorology
 import suicide_rate as suicide
 
 
@@ -154,6 +154,7 @@ happiness_report2016.drop(columns='Region_y',inplace=True)
 
 
 # Bring data from 5 years to only one dataframe
+# If don't want to use a dataframe with every report, we can also use report of each year
 
 main_data_report = happiness_report2015.append(happiness_report2016)
 main_data_report = main_data_report.append(happiness_report2017)
@@ -171,14 +172,16 @@ main_data_report = main_data_report.append(happiness_report2019)
 
 
 
- # Bring final dataframe from each metric we decided to use for analysis
+## Here we have all dataframes done for each metric
 
 alcohol_table = alcohol.get_alcohol_table()
 crime_table = crime.get_crime_table()
-meteorology_table = meteorology.get_meteorology_table()
+#meteorology_table = meteorology.get_meteorology_table()
 suicide_table = suicide.get_suicide_rate()
 
 
+
+"""
 main_data_report = main_data_report.merge(alcohol_table, on='Country', how='inner')
 
 main_data_report.rename(columns={'Region_x':'Region'},inplace=True)
@@ -191,5 +194,52 @@ main_data_report.rename(columns={'index_x':'index'},inplace=True)
 main_data_report.drop(columns='index_y',inplace=True)
 
 main_data_report = main_data_report.merge(suicide_table, on='Country', how='inner')
+
+"""
+
+##### Distribution of GDP per capita across Countries trough the years
+
+fig = sns.catplot(x="GDP per capita", y="year",hue='Country',s=14,height=10,kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
+#plt.figure(figsize=(50,50))
+fig.set(ylabel="Year")
+#a = fig.get_figure()
+fig.savefig("Distribution of GDP per capita across Countries trough the years.png")
+
+
+
+###### correlation between Happiness Score and Freedom to make choices
+#plt.scatter(main_data_report['Happiness Score'],main_data_report['Freedom to make life choices'],c = 'green')
+
+
+
+###### correlation between Happiness Score and Generosity
+
+#sns.lmplot('Happiness Score', 'Generosity',col='year', data=main_data_report, hue='Country', fit_reg=False)
+
+
+
+
+
+##### Distribution of Happiness Score across Countries trough the years
+#sns.catplot(x="Happiness Score", y="year",hue='Country',kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
+
+
+
+
+'''
+##### Distribution of Happiness across Countries through the years ( Heatmap )
+main_data_report = main_data_report.pivot("Country", "year", "Happiness Score")
+main_data_report.sort_values(main_data_report.max().idxmax(), ascending=False,inplace=True)
+plt.figure(figsize=(20,20))
+
+fig = sns.heatmap(main_data_report, cmap="YlGnBu",annot=True,fmt=".3f")
+fig.set(xlabel="Year")
+plt.title('Happiness Score')
+#a.savefig("output.png")
+
+a = fig.get_figure()
+a.savefig('Happiness Score through years by Country')
+
+'''
 
 
