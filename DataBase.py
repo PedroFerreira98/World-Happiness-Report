@@ -200,9 +200,7 @@ main_data_report = main_data_report.merge(suicide_table, on='Country', how='inne
 ##### Distribution of GDP per capita across Countries trough the years
 
 fig = sns.catplot(x="GDP per capita", y="year",hue='Country',s=14,height=10,kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
-#plt.figure(figsize=(50,50))
 fig.set(ylabel="Year")
-#a = fig.get_figure()
 fig.savefig("Distribution of GDP per capita across Countries trough the years.png")
 
 

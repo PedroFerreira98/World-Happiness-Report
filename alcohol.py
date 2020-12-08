@@ -12,6 +12,7 @@ response = requests.get('http://apps.who.int/gho/athena/api/GHO/SA_0000001400.js
 
 #Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol)
 alcohol = pd.json_normalize(response.json()['fact'])
+
 alcohol.rename(columns={'dim.YEAR':'year'},inplace=True)
 
 alcohol['year'] = alcohol['year'].astype(int)
@@ -19,9 +20,9 @@ alcohol = alcohol[alcohol['year']>2014]
 
 alcohol.drop(columns=['dim.PUBLISHSTATE','dim.DATASOURCE','dim.GHO',],inplace=True)
 
-cols_alcohol = ['Value','Region','Country','year','Alcohol_type']
-alcohol.columns=cols_alcohol
+cols_alcohol = ['Value','Country','Alcohol_type','year','Region']
 
+alcohol.columns=cols_alcohol
 
 alcohol.query('Region == "Europe"',inplace=True)
 
@@ -29,6 +30,7 @@ alcohol.reset_index(inplace=True)
 alcohol.drop(columns='index',inplace=True)
 
 alcohol.sort_values(by='Country',inplace=True)
+
 
 #a = alcohol['Country'].unique()
 
@@ -57,22 +59,8 @@ alcohol.rename(columns={'year':'Alcohol_year'},inplace=True)
 alcohol.reset_index(inplace=True)
 alcohol.drop(columns='index',inplace=True)
 
-#print(alcohol.dtypes)
 
 
-#Pedro drop or change (alcohol table): 
-#    
-#    Albania, Andorra, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, 
-
- #   Czechia (change to Czech Republic), \
-#   Kazakhstan, Kyrgyzstan, North Macedonia, Republic of Moldova,
-   
- #  Russian Federation (change to Russia), Tajikistan, Turkey, \
- #      Turkmenistan, 
-       
- #      United Kingdom of Great Britain and Northern Ireland (change to United Kingdom),
-       
- #      Uzbekistan
 
 def get_alcohol_table():
     return alcohol
