@@ -9,8 +9,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import alcohol as alcohol
 import crime as crime
-#import metereology as meteorology
+import metereology as meteorology
 import suicide_rate as suicide
+import numpy as np
 
 
 
@@ -153,6 +154,9 @@ happiness_report2016.rename(columns={'Region_x':'Region'},inplace=True)
 happiness_report2016.drop(columns='Region_y',inplace=True)
 
 
+
+
+
 # Bring data from 5 years to only one dataframe
 # If don't want to use a dataframe with every report, we can also use report of each year
 
@@ -176,16 +180,43 @@ main_data_report = main_data_report.append(happiness_report2019)
 
 alcohol_table = alcohol.get_alcohol_table()
 crime_table = crime.get_crime_table()
-#meteorology_table = meteorology.get_meteorology_table()
+meteorology_table = meteorology.get_meteorology_table()
 suicide_table = suicide.get_suicide_rate()
 
+alcohol_table.query('Alcohol_type == "All types"',inplace=True)
+alcohol_table.drop(columns=['Alcohol_type','Region'],inplace=True)
 
 
-"""
+
+
+#Dataframes with one value per country
+alcohol_table['Alcohol_value'] = alcohol_table['Alcohol_value'].astype(float)
+alcohol_table_mean = pd.DataFrame(alcohol_table.groupby(by='Country',as_index=False)['Alcohol_value'].mean())
+
+crime_table['Crime_Value'] = crime_table['Crime_Value'].astype(float)
+crime_table_mean = pd.DataFrame(crime_table.groupby(by='Country',as_index=False)['Crime_Value'].mean())
+
+suicide_table['Suicide_Value'] = suicide_table['Suicide_Value'].astype(float)
+suicide_table_mean = pd.DataFrame(suicide_table.groupby(by='Country',as_index=False)['Suicide_Value'].mean())
+
+
+
+
+main_data_report = main_data_report.merge(alcohol_table_mean, on='Country', how='inner')
+main_data_report = main_data_report.merge(crime_table_mean, on='Country', how='inner')
+main_data_report = main_data_report.merge(suicide_table_mean, on='Country', how='inner')
+
+main_data_report = main_data_report.merge(meteorology_table, on='Country', how='inner')
+main_data_report.rename(columns={'index_x':'index'},inplace=True)
+main_data_report.drop(columns='index_y',inplace=True)
+
+
+
+
+
+'''
+
 main_data_report = main_data_report.merge(alcohol_table, on='Country', how='inner')
-
-main_data_report.rename(columns={'Region_x':'Region'},inplace=True)
-main_data_report.drop(columns='Region_y',inplace=True)
 
 main_data_report = main_data_report.merge(crime_table, on='Country', how='inner')
 
@@ -195,18 +226,46 @@ main_data_report.drop(columns='index_y',inplace=True)
 
 main_data_report = main_data_report.merge(suicide_table, on='Country', how='inner')
 
-"""
+'''
+
+
+
+###### Visualizations
+
+
+#### Correlation between metrics
+
+main_data_report.drop(columns=['year','index','ranking'],inplace=True)
+
+
+main_data_corr = main_data_report.corr()
+
+mask = np.triu(np.ones_like(main_data_corr,dtype=bool))
+f , ax = plt.subplots(figsize=(20,15))
+cmap  = sns.diverging_palette(230,20,as_cmap=True)
+fig = sns.heatmap(main_data_corr, mask=mask,cmap=cmap,vmax=0.3 \
+            ,center=0,square=True,linewidth=0.5,cbar_kws={'shrink':0.5})
+
+plt.title('Correlation between metrics')
+a = fig.get_figure()
+a.savefig('Correlation between metrics')
+
+
+
 
 ##### Distribution of GDP per capita across Countries trough the years
 
-fig = sns.catplot(x="GDP per capita", y="year",hue='Country',s=14,height=10,kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
-fig.set(ylabel="Year")
-fig.savefig("Distribution of GDP per capita across Countries trough the years.png")
+#fig = sns.catplot(x="GDP per capita", y="year",hue='Country',s=14,height=10,kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
+#fig.set(ylabel="Year")
+#fig.savefig("Distribution of GDP per capita across Countries trough the years.png")
+
 
 
 
 ###### correlation between Happiness Score and Freedom to make choices
 #plt.scatter(main_data_report['Happiness Score'],main_data_report['Freedom to make life choices'],c = 'green')
+
+
 
 
 
@@ -218,14 +277,16 @@ fig.savefig("Distribution of GDP per capita across Countries trough the years.pn
 
 
 
+
 ##### Distribution of Happiness Score across Countries trough the years
 #sns.catplot(x="Happiness Score", y="year",hue='Country',kind="swarm",palette=sns.color_palette(), orient="h",data=main_data_report)
 
 
 
 
-'''
+
 ##### Distribution of Happiness across Countries through the years ( Heatmap )
+'''
 main_data_report = main_data_report.pivot("Country", "year", "Happiness Score")
 main_data_report.sort_values(main_data_report.max().idxmax(), ascending=False,inplace=True)
 plt.figure(figsize=(20,20))
@@ -239,5 +300,6 @@ a = fig.get_figure()
 a.savefig('Happiness Score through years by Country')
 
 '''
+
 
 

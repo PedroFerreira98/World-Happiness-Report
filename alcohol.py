@@ -20,7 +20,7 @@ alcohol = alcohol[alcohol['year']>2014]
 
 alcohol.drop(columns=['dim.PUBLISHSTATE','dim.DATASOURCE','dim.GHO',],inplace=True)
 
-cols_alcohol = ['Value','Country','Alcohol_type','year','Region']
+cols_alcohol = ['Value','Alcohol_type','year','Region','Country']
 
 alcohol.columns=cols_alcohol
 
