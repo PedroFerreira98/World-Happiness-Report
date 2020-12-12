@@ -20,7 +20,8 @@ alcohol = alcohol[alcohol['year']>2014]
 
 alcohol.drop(columns=['dim.PUBLISHSTATE','dim.DATASOURCE','dim.GHO',],inplace=True)
 
-cols_alcohol = ['Value','Alcohol_type','year','Region','Country']
+#print(alcohol.columns)
+cols_alcohol = ['Value','Region','Alcohol_type','Country','year']
 
 alcohol.columns=cols_alcohol
 
@@ -52,7 +53,7 @@ alcohol = alcohol[~alcohol['Country'].isin(countries_to_drop)]
 
 
 
-alcohol.rename(columns={'Value':'Alcohol_value'},inplace=True)
+alcohol.rename(columns={'Value':'Alcohol Consumption (in litres)'},inplace=True)
 alcohol.rename(columns={'year':'Alcohol_year'},inplace=True)
 
 

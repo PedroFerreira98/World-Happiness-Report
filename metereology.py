@@ -95,7 +95,7 @@ year_cleaned[15] = year_cleaned[15]/1000                #We divide the element i
 #Create a new dataframe with a slice of the original dataframe and add the new cleaned 'Year' column
 hours_of_sun_year = hours_of_sun[['Country', 'City']]
 hours_of_sun_year['Metereology_year'] = year_cleaned
-hours_of_sun_year.columns = ['Country', 'City', 'Metereology_value']
+hours_of_sun_year.columns = ['Country', 'City', 'Hours of Sun']
 
 #Groupby country
 hours_of_sun_year_by_country = hours_of_sun_year.groupby('Country', as_index = False).agg('mean')
